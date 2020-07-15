@@ -44,7 +44,7 @@ public class UseBinaryTree {
         // 从数组创建一棵完全二叉树
         Integer[] array4Tree = new Integer[]{4, 7, 14, 3, 6, 1, 5, 2, 8, 9};
         BTree<Integer> tree2 = new BTree<>();
-        tree2.createFromArray(array4Tree);
+        tree2.createFromArray(array4Tree, false);
         System.out.println("前序遍历结果------------------");
         System.out.println(tree2.preOrderTraverse());
 
@@ -57,31 +57,22 @@ public class UseBinaryTree {
         System.out.println("层序遍历结果------------------");
         System.out.println(tree2.levelOrderTraverse());
 
-        // System.out.println("\n从列表创建一棵完全二叉树------------------");
+        System.out.println("tree depth: " + tree.depth());
+        System.out.println("tree2 depth: " + tree2.depth());
 
-        /*List<Integer> list4Tree = new ArrayList<>();
-        list4Tree.add(5);
-        list4Tree.add(6);
-        list4Tree.add(3);
-        list4Tree.add(1);
-        list4Tree.add(4);
-        list4Tree.add(2);
-        list4Tree.add(10);
-        BTree<Integer> tree3 = new BTree<>();
-        tree3.createFromList(list4Tree);
-        System.out.println("中序遍历结果------------------");
-        System.out.println(tree3.inOrderTraverse());*/
+        System.out.println("\n--------------------------------------\n");
 
-        // 通过反射获取私有的方法并且调用
-        /*try {
-            Class<?> clazz = Class.forName("ryan.tree.BTree");
-            Method declaredMethod = clazz.getDeclaredMethod("inOr", BTreeNode.class);
-            // 私有方法先设置可以访问
-            declaredMethod.setAccessible(true);
-            System.out.println("\n使用私有方法强制中序遍历结果------------------");
-            declaredMethod.invoke(tree, root);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        // 手动生成一棵BTS
+        BTree<Integer> btsTree = new BTree<>();
+        btsTree.createFromArray(new Integer[]{15, 10, 20, 8, 13, 16, 30, 1, 9, 11}, false);
+        System.out.println("插入结点前中序：" + btsTree.inOrderTraverse());
+        btsTree.insertInBTS(new BTreeNode<>(20));
+        System.out.println("插入结点(14)后中序：" + btsTree.inOrderTraverse());
+
+        System.out.println("\n从无序序列中直接生成二叉排序树------------------");
+        // 直接将无序序列转换为有序的二叉排序树
+        BTree<Integer> btsTreeAuto = new BTree<>();
+        btsTreeAuto.createFromArray(new Integer[]{12, 1, 56, 23, 5, 7, 45, 20}, true);
+        System.out.println("BST中序: " + btsTreeAuto.inOrderTraverse());
     }
 }

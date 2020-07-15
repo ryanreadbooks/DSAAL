@@ -3,7 +3,7 @@ package ryan.tree;
 /**
  * 树的结点
  */
-public class BTreeNode<T> {
+public class BTreeNode<T extends Comparable<T>>{
 
     private T data;
     private BTreeNode<T> lChild;
@@ -84,4 +84,5 @@ public class BTreeNode<T> {
                 "data=" + data +
                 '}';
     }
+
 }
