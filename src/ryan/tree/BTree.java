@@ -8,9 +8,7 @@ import java.util.*;
 public class BTree<T extends Comparable<T>> {
 
     // 根结点
-    private BTreeNode<T> root;
-    // 标志该数是否是二叉排序树
-    private boolean isBTS;
+    protected BTreeNode<T> root;
 
     public BTree() {
     }
@@ -45,9 +43,8 @@ public class BTree<T extends Comparable<T>> {
      * 从list转化为二叉树结构，而且是完全二叉树的结构
      *
      * @param list 需要转换为树结构的列表
-     * @param bts  是否要生成BTS（二叉排序树）
      */
-    public void createFromList(List<T> list, boolean bts) {
+    public void createFromList(List<T> list) {
         if (list != null && list.size() != 0) {
             List<BTreeNode<T>> nodes = new ArrayList<>();
             for (T t : list) {
@@ -56,34 +53,25 @@ public class BTree<T extends Comparable<T>> {
             // 创建根结点
             this.root = nodes.get(0);
             // 生成完全二叉树
-            if (!bts) {
-                this.isBTS = false;
-                // 定义两个指针 rear, front; rear 指向子结点, front指向父结点
-                int rear = 0, front = 0;
-                while (rear != nodes.size() - 1) {
-                    rear++;
-                    if (rear % 2 == 1) {
-                        // 左子节点
-                        // System.out.println("设置左子节点 == " + nodes.get(rear));
-                        nodes.get(front).setLChild(nodes.get(rear));
-                    }
-                    if (rear % 2 == 0) {
-                        // 右子节点
-                        // System.out.println("设置右子节点 == " + nodes.get(rear));
-                        nodes.get(front).setRChild(nodes.get(rear));
-                        // 设置完右子节点之后,必定是需要设置兄弟结点的左右子节点的
-                        // 所以设置完右子节点之后,front指针加1
-                        front++;
-                    }
+            // 定义两个指针 rear, front; rear 指向子结点, front指向父结点
+            int rear = 0, front = 0;
+            while (rear != nodes.size() - 1) {
+                rear++;
+                if (rear % 2 == 1) {
+                    // 左子节点
+                    // System.out.println("设置左子节点 == " + nodes.get(rear));
+                    nodes.get(front).setLChild(nodes.get(rear));
                 }
-            } else {
-                // 生成二叉排序树
-                this.isBTS = true;
-                // 根结点已经生成，现在开始插入
-                for (int i = 1; i < nodes.size(); i++) {
-                    insertInBTS(nodes.get(i));
+                if (rear % 2 == 0) {
+                    // 右子节点
+                    // System.out.println("设置右子节点 == " + nodes.get(rear));
+                    nodes.get(front).setRChild(nodes.get(rear));
+                    // 设置完右子节点之后,必定是需要设置兄弟结点的左右子节点的
+                    // 所以设置完右子节点之后,front指针加1
+                    front++;
                 }
             }
+
         }
     }
 
@@ -91,58 +79,14 @@ public class BTree<T extends Comparable<T>> {
      * 从数组结构转化为完全二叉树结构
      *
      * @param array 需要转换为树结构的数组
-     * @param bts   是否要生成BTS（二叉排序树）
      */
-    public void createFromArray(T[] array, boolean bts) {
+    public void createFromArray(T[] array) {
         if (array != null && array.length != 0) {
             // 先把所有结点创建出来,并暂时保存在List中
             List<T> nodeData = new ArrayList<>(Arrays.asList(array));
             // 转化为List借用List中构建方法来构建二叉树
-            createFromList(nodeData, bts);
+            createFromList(nodeData);
         }
-    }
-
-    /**
-     * 在二叉排序树中插入一个新节点，且是在叶子节点上插入的
-     * @param node 新结点
-     */
-    public void insertInBTS(BTreeNode<T> node) {
-        if (this.root != null) {
-            insertInBTSHelp(this.root, node);
-        }
-    }
-
-    /**
-     * 往二叉排序树中插入一个结点，要保持该树仍然是一棵二叉排序树
-     *
-     * @param node1 当前的结点
-     * @param node2 需要插入的新节点
-     */
-    private void insertInBTSHelp(BTreeNode<T> node1, BTreeNode<T> node2) {
-        if (node1 != null) {
-            int res = node1.getData().compareTo(node2.getData());
-            // 当前结点比较大，插入结点往左走
-            if (res > 0) {
-                if (node1.getLChild() != null) {
-                    insertInBTSHelp(node1.getLChild(), node2);
-                } else {
-                    // 左子树为空了，直接插入在左边
-                    node1.setLChild(node2);
-                }
-            } else {
-                // 插入结点往右走
-                if (node1.getRChild() != null) {
-                    insertInBTSHelp(node1.getRChild(), node2);
-                } else {
-                    node1.setRChild(node2);
-                }
-            }
-        }
-    }
-
-    // todo implement deletion in bts
-    public boolean deleteInBTS() {
-        return false;
     }
 
     /**
@@ -272,7 +216,7 @@ public class BTree<T extends Comparable<T>> {
     }
 
     /**
-     * 求二叉树的深度
+     * 求整棵二叉树的深度
      *
      * @return 二叉树的深度
      */
@@ -295,7 +239,30 @@ public class BTree<T extends Comparable<T>> {
         return Math.max(leftDepth, rightDepth) + 1;
     }
 
-    public boolean isBTS() {
-        return isBTS;
+    /**
+     * 求传入结点的左子树的高度
+     *
+     * @param node 传入的结点
+     * @return 左子树的高度
+     */
+    protected int leftDepth(BTreeNode<T> node) {
+        if (node == null) {
+            return 0;
+        }
+        return getDepth(node.getLChild());  // 求node结点的左子树的高度
     }
+
+    /**
+     * 求传入结点的右子树的高度
+     *
+     * @param node 传入的结点
+     * @return 右子树的高度
+     */
+    protected int rightDepth(BTreeNode<T> node) {
+        if (node == null) {
+            return 0;
+        }
+        return getDepth(node.getRChild());  // 求node结点的右子树的高度
+    }
+
 }

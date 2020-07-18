@@ -1,7 +1,5 @@
 package ryan.tree;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UseBinaryTree {
@@ -44,7 +42,7 @@ public class UseBinaryTree {
         // 从数组创建一棵完全二叉树
         Integer[] array4Tree = new Integer[]{4, 7, 14, 3, 6, 1, 5, 2, 8, 9};
         BTree<Integer> tree2 = new BTree<>();
-        tree2.createFromArray(array4Tree, false);
+        tree2.createFromArray(array4Tree);
         System.out.println("前序遍历结果------------------");
         System.out.println(tree2.preOrderTraverse());
 
@@ -63,16 +61,26 @@ public class UseBinaryTree {
         System.out.println("\n--------------------------------------\n");
 
         // 手动生成一棵BTS
-        BTree<Integer> btsTree = new BTree<>();
-        btsTree.createFromArray(new Integer[]{15, 10, 20, 8, 13, 16, 30, 1, 9, 11}, false);
-        System.out.println("插入结点前中序：" + btsTree.inOrderTraverse());
-        btsTree.insertInBTS(new BTreeNode<>(20));
-        System.out.println("插入结点(14)后中序：" + btsTree.inOrderTraverse());
+        BSTree<Integer> bstTree = new BSTree<>();
+        bstTree.createFromArray(new Integer[]{15, 10, 20, 8, 13, 16, 30, 1, 9, 11});
+        System.out.println("插入结点前中序：" + bstTree.inOrderTraverse());
+        bstTree.insert(12);
+        System.out.println("插入12后中序遍历： " + bstTree.inOrderTraverse());
+        System.out.println("插入12后的深度：" + bstTree.depth());
+
+        bstTree.remove(15);
+        System.out.println("删除bstTree中的'15': " + bstTree.inOrderTraverse());
+        bstTree.remove(8);
+        System.out.println("删除bstTree中的'8': " + bstTree.inOrderTraverse());
+        bstTree.insert(5);
+        System.out.println("插入5： " + bstTree.inOrderTraverse());
 
         System.out.println("\n从无序序列中直接生成二叉排序树------------------");
         // 直接将无序序列转换为有序的二叉排序树
-        BTree<Integer> btsTreeAuto = new BTree<>();
-        btsTreeAuto.createFromArray(new Integer[]{12, 1, 56, 23, 5, 7, 45, 20}, true);
+        BSTree<Integer> btsTreeAuto = new BSTree<>();
+        btsTreeAuto.createFromArray(new Integer[]{12, 1, 56, 23, 5, 7, 45, 20});
         System.out.println("BST中序: " + btsTreeAuto.inOrderTraverse());
+        System.out.println("深度：" + btsTreeAuto.depth());
+
     }
 }
